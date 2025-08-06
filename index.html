@@ -4,218 +4,520 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Awarded Bids Formatter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 20px;
-            color: #333;
+        :root {
+            --primary-navy: #1a2332;
+            --primary-orange: #ff6b35;
+            --accent-orange: #ff8c5a;
+            --surface-white: #ffffff;
+            --surface-gray-50: #fafbfc;
+            --surface-gray-100: #f4f6f8;
+            --surface-gray-200: #e8ecf0;
+            --surface-gray-300: #d1d9e0;
+            --text-primary: #1a2332;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+            --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-large: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border: 2px solid #1e3a5f;
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--surface-gray-50) 0%, var(--surface-gray-100) 100%);
+            margin: 0;
             padding: 0;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
         }
 
         .header {
-            background-color: #1e3a5f;
-            color: white;
-            padding: 20px;
             text-align: center;
-            border-bottom: 4px solid #f7931e;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.1s forwards;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
         }
 
         .header p {
-            margin: 5px 0 0 0;
-            font-size: 14px;
-        }
-
-        .content {
-            padding: 20px;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            border: 1px solid #ccc;
-            background: #fafafa;
-        }
-
-        .section-header {
-            background-color: #1e3a5f;
-            color: white;
-            padding: 10px 15px;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
             margin: 0;
-            font-size: 16px;
-            font-weight: bold;
+            font-weight: 400;
         }
 
-        .section-content {
-            padding: 15px;
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+        }
+
+        .card {
+            background: var(--surface-white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--surface-gray-200);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-large);
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 0 1.5rem;
+            border-bottom: 1px solid var(--surface-gray-200);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 1.5rem;
+            width: 3rem;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-orange), var(--accent-orange));
+            border-radius: 2px;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, var(--primary-orange), var(--accent-orange));
+            color: white;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0 0 1.5rem 0;
+        }
+
+        .card-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
         .instructions {
-            background-color: #fff3cd;
-            border: 1px solid #f7931e;
-            padding: 10px;
-            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff7ed, #fef3e8);
+            border: 1px solid #fed7aa;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instructions::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary-orange), var(--accent-orange));
         }
 
         .instructions p {
-            margin: 5px 0;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .instructions p:last-child {
+            margin-bottom: 0;
         }
 
         .download-link {
-            color: #f7931e;
-            text-decoration: underline;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 500;
             cursor: pointer;
-            font-weight: bold;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
         }
 
         .download-link:hover {
-            color: #e5821a;
+            color: var(--accent-orange);
+            transform: translateY(-1px);
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 1.5rem;
         }
 
         #dataInput {
             width: 100%;
-            height: 200px;
-            font-family: "Courier New", monospace;
-            font-size: 12px;
-            border: 2px inset #ccc;
-            padding: 10px;
-            background: white;
+            min-height: 200px;
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.875rem;
+            border: 2px solid var(--surface-gray-200);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            background: var(--surface-white);
+            color: var(--text-primary);
+            resize: vertical;
+            transition: var(--transition);
+            line-height: 1.5;
         }
 
         #dataInput:focus {
-            border-color: #f7931e;
             outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgb(255 107 53 / 0.1);
+        }
+
+        #dataInput::placeholder {
+            color: var(--text-tertiary);
+            font-style: italic;
         }
 
         .button-row {
-            text-align: center;
-            margin: 15px 0;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
-        button {
-            background-color: #f7931e;
-            color: white;
-            border: 2px outset #f7931e;
-            padding: 8px 20px;
-            font-size: 14px;
-            font-weight: bold;
+        @media (min-width: 640px) {
+            .button-row {
+                justify-content: flex-start;
+            }
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            border: none;
             cursor: pointer;
-            margin: 0 5px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            min-width: 120px;
+            justify-content: center;
         }
 
-        button:hover {
-            background-color: #e5821a;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-orange), var(--accent-orange));
+            color: white;
+            box-shadow: var(--shadow-subtle);
         }
 
-        button:active {
-            border: 2px inset #f7931e;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--surface-white);
+            color: var(--text-secondary);
+            border: 2px solid var(--surface-gray-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-gray-50);
+            border-color: var(--surface-gray-300);
+            color: var(--text-primary);
+        }
+
+        .output-container {
+            position: relative;
         }
 
         #outputPreview {
-            background: white;
-            border: 2px inset #ccc;
-            padding: 15px;
+            background: var(--surface-gray-50);
+            border: 2px solid var(--surface-gray-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
             min-height: 300px;
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-            line-height: 1.4;
+            font-size: 0.875rem;
+            line-height: 1.6;
             white-space: pre-wrap;
             overflow-y: auto;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        #outputPreview:empty::after {
+            content: 'Your formatted output will appear here...';
+            color: var(--text-tertiary);
+            font-style: italic;
         }
 
         .status {
-            margin: 10px 0;
-            padding: 8px;
-            border: 1px solid;
+            margin: 1rem 0;
+            padding: 0.875rem 1rem;
+            border-radius: var(--border-radius);
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        .status.show {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .status.success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: var(--success);
+            border: 1px solid #a7f3d0;
         }
 
         .status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: var(--error);
+            border: 1px solid #fca5a5;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
+        /* Enhanced table styling */
         table {
             border-collapse: collapse;
             width: 100%;
-            margin: 10px 0;
+            margin: 1rem 0;
+            background: var(--surface-white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
         }
 
         th, td {
-            border: 1px solid #ccc;
-            padding: 5px;
+            padding: 0.75rem;
             text-align: left;
-            font-size: 11px;
+            font-size: 0.8125rem;
+            border-bottom: 1px solid var(--surface-gray-200);
         }
 
         th {
-            background-color: #1e3a5f;
+            background: linear-gradient(135deg, var(--primary-navy), #243447);
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+        }
+
+        td {
+            background: var(--surface-white);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Loading states */
+        .btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            margin: -8px 0 0 -8px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .main-grid {
+                gap: 1.5rem;
+            }
+
+            .card-header {
+                padding: 1rem 1rem 0 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-content {
+                padding: 0 1rem 1rem 1rem;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Focus indicators for accessibility */
+        .btn:focus-visible,
+        #dataInput:focus-visible,
+        .download-link:focus-visible {
+            outline: 2px solid var(--primary-orange);
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+    <div class="app-container">
+        <header class="header">
             <h1>Awarded Bids Formatter</h1>
-            <p>Convert Excel data to email-ready format</p>
-        </div>
+            <p>Transform Excel data into an email-ready format</p>
+        </header>
         
-        <div class="content">
-            <div class="section">
-                <div class="section-header">Step 1: Input Data</div>
-                <div class="section-content">
+        <div class="main-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="step-number">1</span>
+                        Input Data
+                    </h2>
+                    <p class="card-subtitle">Paste your Excel data to get started</p>
+                </div>
+                
+                <div class="card-content">
                     <div class="instructions">
                         <p><strong>Instructions:</strong> Copy data from Excel and paste below. Include the header row.</p>
                         <p><span class="download-link" onclick="downloadTemplate()">📥 Download Excel Template</span> - Get the correct format</p>
                     </div>
                     
-                    <textarea id="dataInput" placeholder="Paste your data here...
+                    <div class="input-container">
+                        <textarea id="dataInput" placeholder="Paste your data here...
 
 Example:
 Local	Public Body	Project Name	Award Amount	Awarded Contractor	Project Location	Estimated Start Date
 68	Village of Lombard	2025 Manhole Rehabilitation	$198,950.00	KIM CONSTRUCTION COMPANY, INC.	Multiple Locations, Lombard, IL 60148	8/1/25"></textarea>
+                    </div>
                     
                     <div class="button-row">
-                        <button onclick="processData()">Process Data</button>
-                        <button onclick="clearAll()">Clear All</button>
+                        <button class="btn btn-primary" onclick="processData()">Process Data</button>
+                        <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
                     </div>
                     
                     <div id="status" class="status hidden"></div>
                 </div>
             </div>
             
-            <div class="section">
-                <div class="section-header">Step 2: Formatted Output</div>
-                <div class="section-content">
-                    <div id="outputPreview">Your formatted output will appear here...</div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="step-number">2</span>
+                        Formatted Output
+                    </h2>
+                    <p class="card-subtitle">Your email-ready content</p>
+                </div>
+                
+                <div class="card-content">
+                    <div class="output-container">
+                        <div id="outputPreview"></div>
+                    </div>
                     <div class="button-row">
-                        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+                        <button class="btn btn-primary" onclick="copyToClipboard()">Copy to Clipboard</button>
                     </div>
                 </div>
             </div>
@@ -238,59 +540,71 @@ Local	Public Body	Project Name	Award Amount	Awarded Contractor	Project Location	
             link.click();
             document.body.removeChild(link);
             
-            showStatus('Template downloaded!', 'success');
+            showStatus('Template downloaded successfully!', 'success');
         }
 
         function showStatus(message, type) {
             const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = `status ${type}`;
+            status.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            status.className = `status ${type} show`;
             status.classList.remove('hidden');
             
             setTimeout(() => {
-                status.classList.add('hidden');
+                status.classList.remove('show');
+                setTimeout(() => {
+                    status.classList.add('hidden');
+                }, 200);
             }, 3000);
         }
 
         function processData() {
             const input = document.getElementById('dataInput').value.trim();
+            const processBtn = event.target;
             
             if (!input) {
                 showStatus('Please paste some data first!', 'error');
                 return;
             }
 
+            // Add loading state
+            processBtn.classList.add('loading');
+
             try {
-                const lines = input.split('\n').filter(line => line.trim());
-                
-                if (lines.length < 2) {
-                    showStatus('Please include header and data rows.', 'error');
-                    return;
-                }
+                setTimeout(() => {
+                    const lines = input.split('\n').filter(line => line.trim());
+                    
+                    if (lines.length < 2) {
+                        processBtn.classList.remove('loading');
+                        showStatus('Please include header and data rows.', 'error');
+                        return;
+                    }
 
-                const headers = lines[0].split('\t').map(h => h.trim());
-                const dataRows = lines.slice(1);
+                    const headers = lines[0].split('\t').map(h => h.trim());
+                    const dataRows = lines.slice(1);
 
-                const projects = dataRows.map(row => {
-                    const cols = row.split('\t').map(c => c.trim());
-                    return {
-                        local: cols[0] || '',
-                        publicBody: cols[1] || '',
-                        projectName: cols[2] || '',
-                        awardAmount: cols[3] || '',
-                        contractor: cols[4] || '',
-                        location: cols[5] || '',
-                        startDate: formatDate(cols[6] || '')
-                    };
-                });
+                    const projects = dataRows.map(row => {
+                        const cols = row.split('\t').map(c => c.trim());
+                        return {
+                            local: cols[0] || '',
+                            publicBody: cols[1] || '',
+                            projectName: cols[2] || '',
+                            awardAmount: cols[3] || '',
+                            contractor: cols[4] || '',
+                            location: cols[5] || '',
+                            startDate: formatDate(cols[6] || '')
+                        };
+                    });
 
-                const groupedProjects = groupByLocal(projects);
-                processedData = formatOutput(groupedProjects);
-                
-                document.getElementById('outputPreview').innerHTML = processedData;
-                showStatus(`Processed ${projects.length} projects successfully!`, 'success');
+                    const groupedProjects = groupByLocal(projects);
+                    processedData = formatOutput(groupedProjects);
+                    
+                    document.getElementById('outputPreview').innerHTML = processedData;
+                    processBtn.classList.remove('loading');
+                    showStatus(`Processed ${projects.length} projects successfully!`, 'success');
+                }, 500);
 
             } catch (error) {
+                processBtn.classList.remove('loading');
                 showStatus('Error processing data. Check format.', 'error');
                 console.error('Processing error:', error);
             }
@@ -368,6 +682,9 @@ Local	Public Body	Project Name	Award Amount	Awarded Contractor	Project Location	
                 return;
             }
 
+            const copyBtn = event.target;
+            copyBtn.classList.add('loading');
+
             try {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = processedData;
@@ -383,30 +700,50 @@ Local	Public Body	Project Name	Award Amount	Awarded Contractor	Project Location	
                     });
                     
                     await navigator.clipboard.write([clipboardItem]);
-                    showStatus('Copied to clipboard!', 'success');
+                    copyBtn.classList.remove('loading');
+                    showStatus('Copied to clipboard successfully!', 'success');
                 } else {
                     const textContent = tempDiv.textContent || tempDiv.innerText || '';
                     await navigator.clipboard.writeText(textContent);
-                    showStatus('Copied (plain text)', 'success');
+                    copyBtn.classList.remove('loading');
+                    showStatus('Copied as plain text', 'success');
                 }
             } catch (error) {
+                copyBtn.classList.remove('loading');
                 showStatus('Copy failed. Select and copy manually.', 'error');
             }
         }
 
         function clearAll() {
             document.getElementById('dataInput').value = '';
-            document.getElementById('outputPreview').innerHTML = 'Your formatted output will appear here...';
+            document.getElementById('outputPreview').innerHTML = '';
             processedData = '';
-            showStatus('Data cleared.', 'success');
+            showStatus('Data cleared successfully.', 'success');
         }
 
+        // Auto-process when data is pasted
         document.getElementById('dataInput').addEventListener('paste', function() {
             setTimeout(() => {
                 if (this.value.trim()) {
                     processData();
                 }
             }, 100);
+        });
+
+        // Add subtle keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'Enter':
+                        e.preventDefault();
+                        processData();
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        clearAll();
+                        break;
+                }
+            }
         });
     </script>
 </body>
